@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF Panel Simulation</title>
+    <style>
+        :root {
+            --primary-color: #00ff00;
+            --secondary-color: #0f0f0f;
+            --accent-color: #ff3333;
+            --glass: rgba(20, 20, 20, 0.9);
+        }
+
+        body {
+            background-color: black;
+            color: var(--primary-color);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .container {
+            width: 400px;
+            background: var(--glass);
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 20px var(--primary-color);
+            padding: 20px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        h2 {
+            text-align: center;
+            border-bottom: 1px dashed var(--primary-color);
+            padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0;
+        }
+
+        .status-bar {
+            background: #222;
+            border: 1px solid #444;
+            padding: 5px;
+            margin-bottom: 15px;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .status-indicator {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            background: rgba(0, 255, 0, 0.1);
+            padding: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        /* Toggle Switch Styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333;
+            transition: .4s;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+        input:checked + .slider { background-color: var(--primary-color); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .console-log {
+            background-color: #000;
+            height: 150px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            padding: 10px;
+            font-size: 0.7rem;
+            margin-bottom: 20px;
+            color: #00ff00;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) #000;
+        }
+
+        .btn-inject {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .btn-inject:hover {
+            background: var(--primary-color);
+            color: black;
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+
+        .btn-inject:disabled {
+            background: #333;
+            border-color: #555;
+            color: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .watermark {
+            text-align: center;
+            font-size: 10px;
+            color: #555;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>FF EXTERNAL V2.0</h2>
+        
+        <div class="status-bar">
+            SYSTEM STATUS: <span id="sys-status" class="status-indicator">OFFLINE</span>
+        </div>
+
+        <ul class="feature-list">
+            <li class="feature-item">
+                <span>AIM ASSIST V2</span>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </li>
+            <li class="feature-item">
+                <span>ESP LINES</span>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </li>
+            <li class="feature-item">
+                <span>NO RECOIL (RISKY)</span>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </li>
+        </ul>
+
+        <div class="console-log" id="console">
+            > UI Initialized...<br>
+            > Waiting for user input...
+        </div>
+
+        <button class="btn-inject" id="injectBtn" onclick="startSimulation()">INJECT CONFIGURATION</button>
+
+        <div class="watermark">
+            USE THIS TOOL SAFELY IT MAY CAUSE BAN TO YOUR ACCOUNT<br>
+            USE ONLY ON GUEST ACCOUNTS 100% WORKING ON ARM32 DEVICE
+        </div>
+    </div>
+
+    <script>
+        const consoleLog = document.getElementById('console');
+        const statusSpan = document.getElementById('sys-status');
+        const btn = document.getElementById('injectBtn');
+
+        function log(text) {
+            const date = new Date();
+            const time = date.toLocaleTimeString().split(' ')[0];
+            consoleLog.innerHTML += `> [${time}] ${text}<br>`;
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        function startSimulation() {
+            btn.disabled = true;
+            btn.innerText = "PROCESSING...";
+            statusSpan.innerText = "CONNECTING...";
+            statusSpan.style.color = "yellow";
+            
+            const steps = [
+                { time: 500, text: "Verifying device integrity..." },
+                { time: 1500, text: "Connecting to virtual server..." },
+                { time: 2500, text: "Bypassing security layer 1..." },
+                { time: 3500, text: "Bypassing security layer 2..." },
+                { time: 4500, text: "Reading memory address 0x4F33A..." },
+                { time: 5500, text: "Injecting payload: aim_assist.dll..." },
+                { time: 6500, text: "Injecting payload: esp_visuals.dll..." },
+                { time: 7500, text: "Cleaning logs..." },
+                { time: 8500, text: "Injection Successful." }
+            ];
+
+            let currentStep = 0;
+
+            function runStep() {
+                if (currentStep < steps.length) {
+                    setTimeout(() => {
+                        log(steps[currentStep].text);
+                        currentStep++;
+                        runStep();
+                    }, Math.random() * 1000 + 500); // Random delay for realism
+                } else {
+                    finishSimulation();
+                }
+            }
+
+            runStep();
+        }
+
+        function finishSimulation() {
+            statusSpan.innerText = "ONLINE";
+            statusSpan.style.color = "#00ff00";
+            btn.innerText = "ACTIVE";
+            log("Process complete. (This is a fake simulation)");
+            
+            // Re-enable button after a few seconds for replayability
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerText = "INJECT CONFIGURATION";
+                statusSpan.innerText = "IDLE";
+                statusSpan.style.color = "white";
+                log("Session ended.");
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
